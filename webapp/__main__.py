@@ -15,7 +15,16 @@ def makepos(body):
 
     if('x' in first_pos):
         fx = first_pos['x']
+    elif('east' in first_pos):
+        fx = first_pos['east']
+    elif('west' in first_pos):
+        fx = -first_pos['west']
+    if('y' in first_pos):
         fy = first_pos['y']
+    elif('north' in first_pos):
+        fy = first_pos['north']
+    elif('south' in first_pos):
+        fy = -first_pos['south']
     else:
         all = (re.findall('\d+', first_pos))
         id = str(all[0])
@@ -26,7 +35,16 @@ def makepos(body):
     
     if('x' in second_pos):
         sx = second_pos['x']
+    elif('east' in second_pos):
+        sx = second_pos['east']
+    elif('west' in second_pos):
+        sx = -second_pos['west']
+    if('y' in second_pos):
         sy = second_pos['y']
+    elif('north' in second_pos):
+        sy = second_pos['north']
+    elif('south' in second_pos):
+        sy = -second_pos['south']
     else:
         all = (re.findall('\d+', second_pos))
         id = str(all[0])
@@ -56,8 +74,6 @@ def distance():
     return jsonify(distance = distance),HTTPStatus.OK
 
 
-    
-    
 
 @app.route('/robot/<id>/position',methods=['PUT'])
 def add_pos(id):
@@ -80,7 +96,11 @@ def findpos(id):
 def nearest():
     body = request.get_json()
     rx = body['ref_position']['x']
-    ry = body['ref_position']['y']    
+    ry = body['ref_position']['y'] 
+    k = 1
+    if 'k' in body:
+        k = int(body['k'])
+       
     minn = 1e9
     ret = []
     for id in robots_id:
@@ -138,4 +158,6 @@ def closestpair():
                 minn = dis
     minn = f"{float(minn):.3f}"
     return jsonify(distance=minn)
+
+
 app.run(host='0.0.0.0',port=8000,debug=1)
