@@ -82,7 +82,7 @@ def nearest():
     rx = body['ref_position']['x']
     ry = body['ref_position']['y']    
     minn = 1e9
-    ret
+    ret = []
     for id in robots_id:
         x = robots_pos[id]['x']
         y = robots_pos[id]['y']
@@ -91,12 +91,12 @@ def nearest():
         dis = math.sqrt(dx*dx+dy*dy)
         if dis < minn:
             minn = dis
-            ret = id
+            ret = [int(id)]
         elif dis == minn:
-            if id < ret:
-                ret = id
+            if int(id) < ret[0]:
+                ret = [int(id)]
         
-    return jsonify(robot_ids = [ret]), HTTPStatus.OK
+    return jsonify(robot_ids = ret), HTTPStatus.OK
 
 @app.route('/alien/<id>/report',methods=['POST'])
 def report(id):
@@ -109,7 +109,9 @@ def report(id):
 
 @app.route('/alien/<id>/position',methods=['GET'])
 def alienpos(id):
-    if len(alienpos[id]) > 1:
+    if len(aliens_pos[id]) <= 1:
+        return '',HTTPStatus.FAILED_DEPENDENCY
+    else:
         
         return '', HTTPStatus.OK, jsonify(position = jsonify(x = coorx, y = coory))
 
@@ -118,7 +120,9 @@ def alienpos(id):
 def closestpair():
     if len(robots_id) == 1:
         return '',HTTPStatus.FAILED_DEPENDENCY
+    
     minn = 1e9
+
     for id1 in robots_id:
         x1 = robots_pos[id1]['x']
         y1 = robots_pos[id1]['y']
@@ -132,6 +136,6 @@ def closestpair():
             dis = math.sqrt(dx*dx+dy*dy)
             if dis < minn:
                 minn = dis
-    minn = f"{float(minn):.2f}"
+    minn = f"{float(minn):.3f}"
     return jsonify(distance=minn)
 app.run(host='0.0.0.0',port=8000,debug=1)
