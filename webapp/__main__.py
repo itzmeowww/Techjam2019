@@ -127,7 +127,7 @@ def closestpair():
         x1 = robots_pos[id1]['x']
         y1 = robots_pos[id1]['y']
         for id2 in robots_id:
-            if id1 == id2 :
+            if id1 == id2:
                 continue
             x2 = robots_pos[id2]['x']
             y2 = robots_pos[id2]['y']
